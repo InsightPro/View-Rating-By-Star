@@ -1,0 +1,93 @@
+<?php
+///////////////////////////////////////////////////////////////////////////////////
+///////////////////////// display post total star rating //////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+
+function get_post_total_star_rating($post_id){
+  global $wpdb, $post;
+  $post_id = ($post_id != '')? $post_id : get_the_ID();
+
+  $rating_query = $wpdb->get_results('SELECT review_rating FROM wp_dom767_reviews WHERE review_post_ID ='.$post_id.' AND review_parent = 0  AND review_type = "review"');
+
+  $sum = 0;
+  foreach ($rating_query as  $rating) {
+    $rating_val = (float)$rating->review_rating;
+    $sum = $sum + $rating_val;
+  }
+
+  $total_rating = count($rating_query) != 0 ? $sum / count($rating_query): 0;
+  $total_rating = round($total_rating, 2);
+  //var_dump($total_rating);
+  $rating_stars = $total_rating * 20 .'%';
+
+  ?>
+  <div class="reviewer-rating">
+    <div class="starRatingContainer" style="width:125px; max-width:125px; height:25px;">
+        <div class="ratingSystem" data-rating="2.3" data-step="0.5" style="width: 125px; height: 25px; background-size: 25px; background-image: url(&quot; <?php echo plugin_dir_url( __FILE__ ); ?>assets/public/image/backgroundStar.png &quot;); background-repeat: repeat-x; min-width: 25px; max-width: 125px;">
+            <div class="emptyStarRating" id="postTotalEmptyStarRating" style="background-size: 25px; background-image: url(&quot; <?php echo plugin_dir_url( __FILE__ ); ?>assets/public/image/star.png &quot;); background-repeat: repeat-x; width: <?php echo $rating_stars ?>; height: 25px;">
+            </div>
+        </div> 
+    </div>
+  </div>
+  <?php
+  return;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////
+////////////////////// display post single user star rating////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+
+function get_single_user_post_star_rating($review_id, $user_id, $post_id){
+
+  global $wpdb, $post;
+  $post_id = ($post_id != '')? $post_id : get_the_ID();
+  $user_id = ($user_id != '')? $user_id : get_current_user_id();
+
+  $rating_query = $wpdb->get_results('SELECT review_rating FROM wp_dom767_reviews WHERE review_post_ID ='.$post_id.' AND review_ID ='.$review_id.' AND review_parent = 0 AND user_id = '.$user_id.' AND review_type = "review"');
+
+  $rating_val = (float)$rating_query[0]->review_rating;
+  $rating_val = number_format($rating_val , 1);/// convert to decimal number.
+  $rating_stars = $rating_val * 20 .'%';
+
+  ?>
+  <div class="reviewer-rating">
+    <div class="starRatingContainer" style="width:80px; max-width:80px; height:16px;">
+        <div class="ratingSystem" data-rating="2.3" data-step="0.5" style="width: 80px; height: 16px; background-size: 16px; background-image: url(&quot; <?php echo plugin_dir_url( __FILE__ ); ?>assets/public/image/backgroundStar.png &quot;); background-repeat: repeat-x; min-width: 8px; max-width: 80px;">
+            <div class="emptyStarRating" style="background-size: 16px; background-image: url(&quot; <?php echo plugin_dir_url( __FILE__ ); ?>assets/public/image/star.png &quot;); background-repeat: repeat-x; width: <?php echo $rating_stars ?>; height: 16px;">
+            </div>
+        </div> 
+    </div>
+  </div>
+  <?php
+  return;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+////////////////////// display post single user star rating////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+
+function get_single_user_post_star_rating($review_id){
+
+  global $wpdb;
+
+  $rating_query = $wpdb->get_results('SELECT review_rating FROM wp_dom767_reviews WHERE review_ID ='.$review_id);
+
+  $rating_val = (float)$rating_query[0]->review_rating;
+  $rating_val = number_format($rating_val , 1);/// convert to decimal number.
+  $rating_stars = $rating_val * 20 .'%';
+
+  ?>
+  <div class="reviewer-rating">
+    <div class="starRatingContainer" style="width:80px; max-width:80px; height:16px;">
+        <div class="ratingSystem" data-rating="2.3" data-step="0.5" style="width: 80px; height: 16px; background-size: 16px; background-image: url(&quot; <?php echo plugin_dir_url( __FILE__ ); ?>assets/public/image/backgroundStar.png &quot;); background-repeat: repeat-x; min-width: 8px; max-width: 80px;">
+            <div class="emptyStarRating" style="background-size: 16px; background-image: url(&quot; <?php echo plugin_dir_url( __FILE__ ); ?>assets/public/image/star.png &quot;); background-repeat: repeat-x; width: <?php echo $rating_stars ?>; height: 16px;">
+            </div>
+        </div> 
+    </div>
+  </div>
+  <?php
+  return;
+}
+
+?>
